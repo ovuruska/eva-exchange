@@ -1,0 +1,8 @@
+export enum ERROR_CODES {
+  // User
+  USER_NOT_FOUND = 1000,
+
+  // Portfolio
+  PORTFOLIO_NOT_FOUND = 2000,
+  PORTFOLIO_WITH_NAME_EXISTS = 2001,
+}
