@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import {
+  ApiConflictResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
@@ -49,6 +50,7 @@ export class PortfolioController {
   @ApiNotFoundResponse({
     description: 'User not found',
   })
+  @ApiConflictResponse({ description: 'Portfolio with name already exists.' })
   public async createPortfolio(@Body() request: CreatePortfolioDto) {
     const { name, userId } = request;
     return this.portfolioService.createPortfolio(name, userId);

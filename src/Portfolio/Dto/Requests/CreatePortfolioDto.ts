@@ -1,7 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsNotEmpty, IsNumber, IsString, Length } from 'class-validator';
-import { Transform } from 'class-transformer';
-import { Int32 } from 'typeorm';
+import { IsNotEmpty, IsNumber, IsString, Length } from 'class-validator';
 
 export class CreatePortfolioDto {
   @ApiProperty({
