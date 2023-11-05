@@ -24,14 +24,16 @@ export class PortfolioShareService {
         share.id,
       );
       portfolioShare.quantity += quantity;
-      return this.portfolioShareRepository.save(portfolioShare);
+      await this.portfolioShareRepository.save(portfolioShare);
+      return portfolioShare;
     } catch (error) {
       if (error instanceof PortfolioShareNotFoundException) {
         const newPortfolioShare = new PortfolioShare();
         newPortfolioShare.portfolio = portfolio;
         newPortfolioShare.share = share;
         newPortfolioShare.quantity = quantity;
-        return this.portfolioShareRepository.save(newPortfolioShare);
+        await this.portfolioShareRepository.save(newPortfolioShare);
+        return newPortfolioShare;
       }
     }
   }
@@ -41,16 +43,21 @@ export class PortfolioShareService {
     shareId: number,
   ): Promise<PortfolioShare> {
     try {
-      return this.portfolioShareRepository.findOneOrFail({
-        where: {
-          portfolio: {
-            id: portfolioId,
-          },
-          share: {
-            id: shareId,
-          },
-        },
-      });
+      return await this.portfolioShareRepository
+        .createQueryBuilder('portfolioShare')
+        .innerJoinAndSelect(
+          'portfolioShare.portfolio',
+          'portfolio',
+          'portfolio.id = :portfolioId',
+          { portfolioId },
+        )
+        .innerJoinAndSelect(
+          'portfolioShare.share',
+          'share',
+          'share.id = :shareId',
+          { shareId },
+        )
+        .getOneOrFail();
     } catch {
       throw new PortfolioShareNotFoundException(portfolioId, shareId);
     }
@@ -59,26 +66,28 @@ export class PortfolioShareService {
   public async getPortfolioSharesByPortfolioId(
     portfolioId: number,
   ): Promise<PortfolioShare[]> {
-    return this.portfolioShareRepository.find({
-      where: {
-        portfolio: {
-          id: portfolioId,
-        },
-      },
-    });
+    return this.portfolioShareRepository
+      .createQueryBuilder('portfolioShare')
+      .innerJoinAndSelect(
+        'portfolioShare.portfolio',
+        'portfolio',
+        'portfolio.id = :portfolioId',
+        { portfolioId },
+      )
+      .getMany();
   }
-
   public async getPortfolioSharesByUserId(
     userId: number,
   ): Promise<PortfolioShare[]> {
-    return this.portfolioShareRepository.find({
-      where: {
-        portfolio: {
-          portfolioUser: {
-            id: userId,
-          },
-        },
-      },
-    });
+    return this.portfolioShareRepository
+      .createQueryBuilder('portfolioShare')
+      .innerJoinAndSelect('portfolioShare.portfolio', 'portfolio')
+      .innerJoinAndSelect(
+        'portfolio.portfolioUser',
+        'portfolioUser',
+        'portfolioUser.id = :userId',
+        { userId },
+      )
+      .getMany();
   }
 }

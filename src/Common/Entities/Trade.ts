@@ -28,7 +28,9 @@ export class Trade {
   })
   tradeType: TRADE_TYPE;
 
-  @Column({ type: 'time', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({
+    type: 'bigint',
+  })
   tradeTime: number;
 
   @Column({

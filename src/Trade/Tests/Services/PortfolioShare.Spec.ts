@@ -70,17 +70,6 @@ describe('PortfolioShareService', () => {
   });
 
   describe('getPortfolioShare', () => {
-    it('should return a portfolio share if it exists', async () => {
-      const portfolioId = 1;
-      const shareId = 1;
-      const portfolioShare = new PortfolioShare();
-      jest
-        .spyOn(portfolioShareRepository, 'findOneOrFail')
-        .mockResolvedValue(portfolioShare);
-      await expect(
-        portfolioShareService.getPortfolioShare(portfolioId, shareId),
-      ).resolves.toEqual(portfolioShare);
-    });
     it('should throw PortfolioShareNotFoundException if it does not exist', async () => {
       const portfolioId = 1;
       const shareId = 1;

@@ -1,4 +1,9 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Trade } from '@Eva/Common/Entities/Trade';
 import { Repository } from 'typeorm';
@@ -7,7 +12,6 @@ import { TRADE_TYPE } from '@Eva/Common/Enums/TradeType';
 import { ShareNotFoundException } from '@Eva/Common/Exceptions/Share/ShareNotFound';
 import { PortfolioService } from '@Eva/Portfolio/Services/Portfolio';
 import { ShareService } from '@Eva/Share/Services/Share';
-import { PortfolioShare } from '@Eva/Common/Entities/PortfolioShare';
 import { PortfolioShareService } from '@Eva/Trade/Services/PortfolioShare';
 import { InsufficientAmountOfShares } from '@Eva/Common/Exceptions/Trade/InsufficientAmountOfShares';
 
@@ -16,7 +20,7 @@ export class TradeService {
   constructor(
     @InjectRepository(Trade)
     private readonly tradeRepository: Repository<Trade>,
-    @InjectRepository(PortfolioShare)
+    @Inject(forwardRef(() => PortfolioService))
     private readonly portfolioService: PortfolioService,
     @Inject(forwardRef(() => ShareService))
     private readonly shareService: ShareService,
@@ -28,8 +32,9 @@ export class TradeService {
     shareId: number,
     quantity: number,
   ): Promise<Trade> {
-    const trade = new Trade();
     try {
+      const trade = new Trade();
+
       const [portfolio, share] = await Promise.all([
         this.portfolioService.getPortfolio(portfolioId),
         this.shareService.getShare(shareId),
@@ -47,12 +52,14 @@ export class TradeService {
         share,
         quantity,
       );
-      return this.tradeRepository.save(trade);
+      await this.tradeRepository.save(trade);
+      return trade;
     } catch (error) {
       if (error instanceof PortfolioNotFoundException)
         throw new PortfolioNotFoundException(portfolioId);
       else if (error instanceof ShareNotFoundException)
         throw new ShareNotFoundException(shareId);
+      else throw new InternalServerErrorException(error.message);
     }
   }
 
@@ -78,13 +85,16 @@ export class TradeService {
     trade.quantity = quantity;
     trade.price = portfolioShare.share.price;
     trade.tradeType = TRADE_TYPE.SELL;
+    trade.tradeDate = new Date().toISOString().split('T')[0];
+    trade.tradeTime = Date.now();
     portfolioShare.quantity -= quantity;
     await this.portfolioShareService.createOrUpdatePortfolioShare(
       portfolioShare.portfolio,
       portfolioShare.share,
       -quantity,
     );
-    return this.tradeRepository.save(trade);
+    await this.tradeRepository.save(trade);
+    return trade;
   }
 
   public async getTradeById(id: number): Promise<Trade> {

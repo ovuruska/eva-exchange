@@ -2,6 +2,7 @@ version: "3.8"
 
 services:
   api:
+    restart: always
     build:
       context: .
       dockerfile: Dockerfile
@@ -15,6 +16,7 @@ services:
       - default
 
   db:
+    restart: always
     image: postgres:15-alpine
     ports:
       - "5432:5432"

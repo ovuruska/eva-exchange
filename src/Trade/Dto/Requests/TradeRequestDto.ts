@@ -21,7 +21,6 @@ export class TradeRequestDto {
     example: 1,
   })
   @IsNumber()
-  @Transform(Number)
   portfolioId: number;
 
   @ApiProperty({
@@ -29,7 +28,6 @@ export class TradeRequestDto {
     example: 1,
   })
   @IsNumber()
-  @Transform(Number)
   shareId: number;
 
   @ApiProperty({
@@ -38,6 +36,5 @@ export class TradeRequestDto {
   })
   @IsPositive()
   @IsNumber()
-  @Transform(Number)
   quantity: number;
 }

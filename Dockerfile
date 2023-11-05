@@ -5,12 +5,6 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-FROM node:18-alpine
-WORKDIR /usr/src/app
-COPY --from=builder /usr/src/app/dist ./dist
-COPY package*.json ./
-RUN npm install --only=production
-RUN npm cache clean --force
-COPY .env.local ./
+COPY .env.docker .env
 EXPOSE ${PORT}
-CMD ["node", "dist/Main"]
+CMD ["npm", "run", "start:prod"]

@@ -81,9 +81,15 @@ describe('TradeService', () => {
       jest
         .spyOn(portfolioShareService, 'createOrUpdatePortfolioShare')
         .mockResolvedValue(portfolioShare);
-      await expect(
-        tradeService.buyShare(portfolioId, shareId, quantity),
-      ).resolves.toEqual(trade);
+      const result = await tradeService.buyShare(
+        portfolioId,
+        shareId,
+        quantity,
+      );
+      expect(result.share).toEqual(share);
+      expect(result.portfolio).toEqual(portfolio);
+      expect(result.quantity).toEqual(quantity);
+      expect(result.price).toEqual(share.price);
     });
   });
 
