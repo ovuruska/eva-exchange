@@ -11,6 +11,8 @@ services:
       - .:/app
     depends_on:
       - db
+    networks:
+      - default
 
   db:
     image: postgres:15-alpine
@@ -22,7 +24,14 @@ services:
       - POSTGRES_DB=${DB_NAME}
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - ./db-data:/var/lib/postgresql/data
+      - ./scripts:/docker-entrypoint-initdb.d
+    networks:
+      - default
 
 volumes:
   db-data:
+
+networks:
+  default:
+      name: ${NETWORK_NAME}

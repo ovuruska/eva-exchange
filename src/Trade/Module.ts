@@ -16,5 +16,6 @@ import { PortfolioShareService } from '@Eva/Trade/Services/PortfolioShare';
   ],
   controllers: [TradeController],
   providers: [TradeService, PortfolioShareService],
+  exports: [TradeService, PortfolioShareService],
 })
 export class TradeModule {}

@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { Length, Min } from 'class-validator';
+import { IsUppercase, Length, Min } from 'class-validator';
 
 @Entity('shares')
 @Unique(['symbol'])
@@ -17,6 +17,7 @@ export class Share {
     example: 'TRY',
   })
   @Length(3)
+  @IsUppercase()
   @Column({ length: 3 })
   symbol: string;
 

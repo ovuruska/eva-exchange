@@ -26,15 +26,20 @@ export class Trade {
     type: 'enum',
     enum: TRADE_TYPE,
   })
-  type: TRADE_TYPE;
+  tradeType: TRADE_TYPE;
 
-  @Column({ type: 'time', default: () => 'CURRENT_TIME' })
-  time: Date;
+  @Column({ type: 'time', default: () => 'CURRENT_TIMESTAMP' })
+  tradeTime: number;
 
-  @Column({ type: 'date', default: () => 'CURRENT_DATE' })
-  date: Date;
+  @Column({
+    default: () => new Date().toISOString().split('T')[0],
+  })
+  tradeDate: string;
 
-  @Column()
+  @Column({
+    type: 'int',
+    nullable: false,
+  })
   quantity: number;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })

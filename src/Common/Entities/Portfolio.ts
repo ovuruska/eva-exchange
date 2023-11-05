@@ -9,7 +9,7 @@ import {
 import { User } from '@Eva/Common/Entities/User';
 import { ApiProperty } from '@nestjs/swagger';
 @Entity('portfolios')
-@Unique(['user', 'name'])
+@Unique(['portfolioUser', 'portfolioName'])
 export class Portfolio {
   @ApiProperty({
     description: 'Portfolio Id',
@@ -27,13 +27,13 @@ export class Portfolio {
     type: User,
   })
   @ManyToOne(() => User, (user) => user.id)
-  @JoinColumn({ name: 'user' })
-  user: User;
+  @JoinColumn()
+  portfolioUser: User;
 
   @ApiProperty({
     description: 'Portfolio name',
     example: 'My TRY portfolio',
   })
-  @Column({ length: 64 })
-  name: string;
+  @Column({ length: 64, name: 'portfolioname' })
+  portfolioName: string;
 }

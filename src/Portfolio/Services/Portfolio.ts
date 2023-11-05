@@ -24,8 +24,8 @@ export class PortfolioService {
     const user = await this.getUser(userId);
     try {
       const portfolio = new Portfolio();
-      portfolio.name = name;
-      portfolio.user = user;
+      portfolio.portfolioName = name;
+      portfolio.portfolioUser = user;
       await this.portfolioRepository.save(portfolio);
       return portfolio;
     } catch (error) {
@@ -45,9 +45,9 @@ export class PortfolioService {
     const user = await this.getUser(userId);
     return this.portfolioRepository.find({
       where: {
-        user,
+        portfolioUser: user,
       },
-      select: ['id', 'name'],
+      select: ['id', 'portfolioName'],
     });
   }
 

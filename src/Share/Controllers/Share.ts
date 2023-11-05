@@ -12,7 +12,7 @@ import { CreateShareDto } from '@Eva/Share/Dto/Requests/CreateShareDto';
 import { UpdateShareDto } from '@Eva/Share/Dto/Requests/UpdateShareDto';
 
 @Controller('shares')
-@ApiTags('shares')
+@ApiTags('Shares')
 export class ShareController {
   constructor(private readonly shareService: ShareService) {}
 

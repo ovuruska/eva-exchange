@@ -41,13 +41,13 @@ describe('PortfolioService', () => {
   });
 
   describe('createPortfolio', () => {
-    it('should create portfolio if user exists and no portfolio with same name', async () => {
+    it('should create portfolio if user exists and no portfolio with same portfolioName', async () => {
       const user = new User();
       user.id = 1;
       jest.spyOn(portfolioService, 'getUser').mockResolvedValueOnce(user);
       const portfolio = new Portfolio();
-      portfolio.name = 'portfolio';
-      portfolio.user = user;
+      portfolio.portfolioName = 'portfolio';
+      portfolio.portfolioUser = user;
       jest.spyOn(portfolioRepository, 'save').mockResolvedValueOnce(portfolio);
       const createdPortfolio = await portfolioService.createPortfolio(
         'portfolio',

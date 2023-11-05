@@ -23,7 +23,7 @@ export class PortfolioShareService {
         portfolio.id,
         share.id,
       );
-      portfolioShare.quantity = quantity;
+      portfolioShare.quantity += quantity;
       return this.portfolioShareRepository.save(portfolioShare);
     } catch (error) {
       if (error instanceof PortfolioShareNotFoundException) {
@@ -54,5 +54,31 @@ export class PortfolioShareService {
     } catch {
       throw new PortfolioShareNotFoundException(portfolioId, shareId);
     }
+  }
+
+  public async getPortfolioSharesByPortfolioId(
+    portfolioId: number,
+  ): Promise<PortfolioShare[]> {
+    return this.portfolioShareRepository.find({
+      where: {
+        portfolio: {
+          id: portfolioId,
+        },
+      },
+    });
+  }
+
+  public async getPortfolioSharesByUserId(
+    userId: number,
+  ): Promise<PortfolioShare[]> {
+    return this.portfolioShareRepository.find({
+      where: {
+        portfolio: {
+          portfolioUser: {
+            id: userId,
+          },
+        },
+      },
+    });
   }
 }
