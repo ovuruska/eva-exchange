@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Portfolio } from '@Eva/Common/Entities/Portfolio';
-import { QueryFailedError, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { User } from '@Eva/Common/Entities/User';
 import { UserNotFoundException } from '@Eva/Common/Exceptions/User/UserNotFound';
 import { PartialPortfolioDto } from '@Eva/Portfolio/Dto/Responses/PartialPortfolioDto';
 import { PortfolioWithNameExistsException } from '@Eva/Common/Exceptions/Portfolio/PortfolioWithNameExists';
-import { LoggerService } from '@Eva/Providers/Logger/Service';
+import { PortfolioNotFoundException } from '@Eva/Common/Exceptions/Portfolio/PortfolioNotFound';
 
 @Injectable()
 export class PortfolioService {
@@ -21,12 +21,7 @@ export class PortfolioService {
     name: string,
     userId: number,
   ): Promise<Portfolio> {
-    const user = await this.userRepository.findOneBy({
-      id: userId,
-    });
-    if (!user) {
-      throw new UserNotFoundException(userId);
-    }
+    const user = await this.getUser(userId);
     try {
       const portfolio = new Portfolio();
       portfolio.name = name;
@@ -47,19 +42,32 @@ export class PortfolioService {
   public async getUserPortfolios(
     userId: number,
   ): Promise<PartialPortfolioDto[]> {
-    const user = await this.userRepository.findOneBy({
-      id: userId,
-    });
-    if (!user) {
-      throw new UserNotFoundException(userId);
-    }
+    const user = await this.getUser(userId);
     return this.portfolioRepository.find({
       where: {
-        user: {
-          id: userId,
-        },
+        user,
       },
       select: ['id', 'name'],
     });
+  }
+
+  public async getPortfolio(id: number): Promise<Portfolio> {
+    try {
+      return await this.portfolioRepository.findOneOrFail({
+        where: { id },
+      });
+    } catch {
+      throw new PortfolioNotFoundException(id);
+    }
+  }
+
+  public async getUser(id: number): Promise<User> {
+    try {
+      return await this.userRepository.findOneOrFail({
+        where: { id },
+      });
+    } catch {
+      throw new UserNotFoundException(id);
+    }
   }
 }

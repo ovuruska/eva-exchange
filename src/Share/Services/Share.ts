@@ -31,15 +31,18 @@ export class ShareService {
   }
 
   public async updateShare(id: number, price: number): Promise<Share> {
-    const share = await this.shareRepository.findOne({
-      where: { id },
-    });
-
-    if (!share) {
-      throw new ShareNotFoundException(id);
-    }
-
+    const share = await this.getShare(id);
     share.price = price;
     return await this.shareRepository.save(share);
+  }
+
+  public async getShare(id: number): Promise<Share> {
+    try {
+      return await this.shareRepository.findOneOrFail({
+        where: { id },
+      });
+    } catch {
+      throw new ShareNotFoundException(id);
+    }
   }
 }

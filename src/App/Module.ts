@@ -5,6 +5,7 @@ import { TypeOrmConfigModule } from '@Eva/Providers/TypeOrmConfig/Module';
 import { LoggerModule } from '@Eva/Providers/Logger/Module';
 import { PortfolioModule } from '@Eva/Portfolio/Module';
 import { ShareModule } from '@Eva/Share/Module';
+import { TradeModule } from '@Eva/Trade/Module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ShareModule } from '@Eva/Share/Module';
     LoggerModule,
     PortfolioModule,
     ShareModule,
+    TradeModule,
   ],
   controllers: [],
   providers: [],

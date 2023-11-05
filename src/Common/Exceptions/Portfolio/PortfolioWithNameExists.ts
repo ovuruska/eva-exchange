@@ -7,7 +7,7 @@ export class PortfolioWithNameExistsException extends HttpException {
       {
         statusCode: HttpStatus.CONFLICT,
         errorCode: ERROR_CODES.PORTFOLIO_WITH_NAME_EXISTS,
-        message: `Portfolio with name ${name} already exists`,
+        message: `Portfolio with name ${name} already exists.`,
       },
       HttpStatus.CONFLICT,
     );

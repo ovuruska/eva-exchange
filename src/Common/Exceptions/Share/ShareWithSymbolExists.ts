@@ -7,7 +7,7 @@ export class ShareWithSymbolExistsException extends HttpException {
       {
         statusCode: HttpStatus.CONFLICT,
         errorCode: ERROR_CODES.SHARE_WITH_SYMBOL_EXISTS,
-        message: `Share with symbol ${symbol} already exists`,
+        message: `Share with symbol ${symbol} already exists.`,
       },
       HttpStatus.CONFLICT,
     );

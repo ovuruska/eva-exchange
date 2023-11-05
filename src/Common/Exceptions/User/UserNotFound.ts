@@ -7,7 +7,7 @@ export class UserNotFoundException extends HttpException {
       {
         statusCode: HttpStatus.NOT_FOUND,
         errorCode: ERROR_CODES.USER_NOT_FOUND,
-        message: `User with id ${id} not found`,
+        message: `User with id ${id} not found.`,
       },
       HttpStatus.NOT_FOUND,
     );
